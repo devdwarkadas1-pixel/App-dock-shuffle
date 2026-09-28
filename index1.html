@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>App Dock Shuffle</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: #f4f5ff; background: #10121d; font-family: system-ui, sans-serif; }
+    main { width: min(1000px, 92%); margin: auto; padding: 64px 0 30px; }
+    header { text-align: center; margin-bottom: 28px; }
+    header p, .card p, footer { color: #aeb1c5; }
+    h1 { font-size: clamp(2.3rem, 6vw, 4rem); margin: 10px 0; }
+    .eyebrow { color: #aeb8ff; text-transform: uppercase; letter-spacing: .15em; font-size: .78rem; }
+    .controls { text-align: center; margin: 26px 0; }
+    button { border: 0; border-radius: 30px; padding: 13px 20px; color: #10121d; background: #c1c9ff; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    button:hover { background: white; }
+    button:focus-visible, a:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+    #docks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .card { padding: 22px; min-height: 200px; border: 1px solid #ffffff20; border-radius: 18px; background: #1a1d2b; }
+    .platform { color: #c4cbff; font-size: .75rem; font-weight: 700; }
+    .card h2 { margin: 14px 0 8px; font-size: 1.2rem; }
+    .card p { line-height: 1.5; font-size: .92rem; }
+    .rating { color: #ffd879; }
+    footer { border-top: 1px solid #ffffff20; margin-top: 42px; padding-top: 20px; text-align: center; }
+    footer a { color: #c4cbff; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">New picks everytime</div>
+      <h1>App Dock Shuffle</h1>
+      <p>Shuffle through popular apps you can add to your dock.</p>
+    </header>
+    <div class="controls"><button id="shuffle" type="button">⤨ Shuffle apps</button></div>
+    <section id="docks" aria-live="polite" aria-label="App recommendations"></section>
+    <footer>Visit the man himself <a href="https://www.youtube.com/@actuallycarterpcs" target="_blank" rel="noopener noreferrer"> <b>CarterPcs</b></a></footer>
+  </main>
+  <script>
+    const apps = [
+      { name: 'YouTube', platform: 'Video', description: 'Watch videos, explore channels, and catch up on subscriptions.', rating: '★★★★★' },
+      { name: 'Safari', platform: 'Web browser', description: 'Browse the web with Apple’s fast, privacy-focused browser.', rating: '★★★★★' },
+      { name: 'Google', platform: 'Search', description: 'Find websites, answers, images, and more with Google Search.', rating: '★★★★★' },
+      { name: 'TikTok', platform: 'Social', description: 'Discover and share short videos picked for your interests.', rating: '★★★★☆' },
+      { name: 'Instagram', platform: 'Social', description: 'Share photos and videos and keep up with people you follow.', rating: '★★★★☆' },
+      { name: 'Spotify', platform: 'Music', description: 'Listen to music, podcasts, and curated playlists.', rating: '★★★★★' },
+      { name: 'WhatsApp', platform: 'Messaging', description: 'Send messages and make calls with friends and family.', rating: '★★★★★' },
+      { name: 'Netflix', platform: 'Entertainment', description: 'Stream films, series, and documentaries.', rating: '★★★★☆' },
+      { name: 'Google Maps', platform: 'Navigation', description: 'Find places, get directions, and explore nearby businesses.', rating: '★★★★★' },
+      { name: 'Gmail', platform: 'Email', description: 'Read, organize, and send email from your Google account.', rating: '★★★★★' },
+      { name: 'Discord', platform: 'Communication', description: 'Chat, voice call, and hang out in communities.', rating: '★★★★☆' },
+      { name: 'Pinterest', platform: 'Inspiration', description: 'Discover and save ideas for projects, style, food, and more.', rating: '★★★★☆' }
+    ];
+    let previous = [];
+    function shuffleApps() {
+      let pool = apps.filter(app => !previous.includes(app));
+      if (pool.length < 4) pool = [...apps];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const picks = pool.slice(0, 4);
+      previous = picks;
+      document.getElementById('docks').innerHTML = picks.map(app =>
+        `<article class="card"><span class="platform">${app.platform}</span><h2>${app.name}</h2><p>${app.description}</p><div class="rating" aria-label="Rating ${app.rating.length} out of 5">${app.rating}</div></article>`
+      ).join('');
+    }
+    document.getElementById('shuffle').addEventListener('click', shuffleApps);
+    shuffleApps();
+  </script>
+</body>
+</html>
